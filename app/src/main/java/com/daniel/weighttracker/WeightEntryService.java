@@ -43,15 +43,24 @@ public class WeightEntryService  {
     {
         File file = new File( context.getFilesDir()  , filename);
 
-
-
-        writeFileCotents(file, "Hello There World");
-
-
+        writeFileContents(file, "Hello There World");
 
         return true;
     }
 
+    public static boolean writeWeightRecord(WeightRecord record)
+    {
+
+        return true;
+    }
+
+    public static WeightRecord getWeightRecord()
+    {
+
+
+        return new WeightRecord();
+
+    }
     public static boolean getFile(String filename)
     {
         return true;
@@ -64,7 +73,6 @@ public class WeightEntryService  {
 
     public static String readFile( File file )
     {
-
         String contents = "";
         try ( FileInputStream inputStream = new FileInputStream( new File(file.toString()) ) )
         {
@@ -74,7 +82,6 @@ public class WeightEntryService  {
         {}
 
         return contents;
-
 
     }
 
@@ -99,13 +106,11 @@ public class WeightEntryService  {
 
     }
 
-    private static String writeFileCotents(File file, String data)
+    private static String writeFileContents(File file, String data)
     {
         try (FileOutputStream output = context.openFileOutput(file.getName(), Context.MODE_PRIVATE))
         {
-
             output.write(data.getBytes());
-
         }
         catch(IOException e)
         {

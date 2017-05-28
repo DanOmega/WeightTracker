@@ -1,39 +1,39 @@
 package com.daniel.weighttracker;
 
-import android.content.Context;
+
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-
+import android.view.View;
 import static com.daniel.weighttracker.LogHelper.Log;
 
 public class MainActivity extends AppCompatActivity
 {
 
-
+    public static WeightRecord weights;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log("Record new weight");
 
-        if( WeightEntryService.getContext() == null)
-        {
-           WeightEntryService.setContext( getApplicationContext() );
-        }
+    }
 
-        WeightEntryService.saveNewFile( "Test");
+    public void recordNewWeight(View view)
+    {
 
-        Log("Hello");
+        Log("Record new weight");
+        Intent intent = new Intent( this, WeightActivity.class);
 
-        File file = getApplicationContext().getFileStreamPath("Test");
+        startActivity(intent);
 
-        String test = WeightEntryService.readFile( getApplicationContext().getFileStreamPath("Test") );
+    }
 
-        Log(file.toString());
-        Log(test);
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
     }
 }
