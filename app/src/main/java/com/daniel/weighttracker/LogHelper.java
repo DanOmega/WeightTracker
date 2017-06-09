@@ -16,5 +16,11 @@ public class LogHelper
         Log.i(TAG, s);
     }
 
+    public static void Log( String s, Exception e)
+    {
+        Log.i(TAG, s);
+        e.printStackTrace();
+    }
+
 
 }

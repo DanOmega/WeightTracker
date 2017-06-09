@@ -1,7 +1,10 @@
-package com.daniel.weighttracker;
+package com.daniel.weighttracker.DBHelpers;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Bitmap;
+
+import com.daniel.weighttracker.WeightRecord;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -48,10 +51,17 @@ public class WeightEntryService  {
         return true;
     }
 
-    public static boolean writeWeightRecord(WeightRecord record)
+    //Returns the FilePath of the newly written image
+    public static String writeWeightRecord(WeightRecord record)
     {
 
-        return true;
+        return "";
+    }
+
+    public static String writeWeightRecord(Bitmap image)
+    {
+
+        return "";
     }
 
     public static WeightRecord getWeightRecord()
@@ -61,7 +71,7 @@ public class WeightEntryService  {
         return new WeightRecord();
 
     }
-    public static boolean getFile(String filename)
+    public static Bitmap getImage(String filename)
     {
         return true;
     }
