@@ -14,7 +14,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.daniel.weighttracker.DBHelpers.WeightTrackerService;
+
+import static com.daniel.weighttracker.DBHelpers.WeightTrackerService.deleteWeightRecord;
+import static com.daniel.weighttracker.DBHelpers.WeightTrackerService.saveNewWeightRecord;
 import static com.daniel.weighttracker.LogHelper.Log;
+import static com.daniel.weighttracker.MainActivity.currentRecord;
 import static com.daniel.weighttracker.MainActivity.weights;
 
 /**
@@ -25,8 +30,8 @@ public class WeightActivity extends AppCompatActivity
 {
     ImageView imageView;
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    Bitmap image;
     TextView weightView;
+
 
 
 
@@ -39,13 +44,17 @@ public class WeightActivity extends AppCompatActivity
         imageView = (ImageView ) findViewById(R.id.imageView5);
         weightView = ( TextView ) findViewById(R.id.editText2);
 
-        if( weights == null )
-        {
 
+        if(currentRecord == null )
+        {
+            currentRecord = new WeightRecord();
         }
-        else {
-            imageView.setImageBitmap( weights.getImage());
-            weightView.setText(weights.getWeight());
+        else
+        {
+            imageView.setImageBitmap(currentRecord.getImage());
+            weightView.setText(currentRecord.getWeight());
+            imageView.setEnabled(false);
+            weightView.setEnabled(false);
         }
 
     }
@@ -53,25 +62,36 @@ public class WeightActivity extends AppCompatActivity
     public void saveWeightObject(View view)
     {
 
-        if ( imageView == null ) return;
+        if(weightView.isEnabled() == false || imageView.isEnabled() == false)
+        {
+            deleteWeightObject();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            return;
+        }
 
-        String weight = weightView.getEditableText().toString();
+        Bitmap image = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
 
-        image = (( BitmapDrawable ) imageView.getDrawable() ).getBitmap();
+        String weightValue = weightView.getText().toString();
 
+        Log(weightValue);
 
-        weights = new WeightRecord(image, weight);
+        if( image != null && weightValue != null )
+        {
+            currentRecord.setImage(image);
+            currentRecord.setWeight(weightValue);
 
-        Toast.makeText(this, "Weight Recorded", Toast.LENGTH_SHORT).show();
+            saveNewWeightRecord(currentRecord);
+        }
 
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
 
+    }
 
-
-
-        Log(weight);
-
+    private void deleteWeightObject()
+    {
+        deleteWeightRecord(currentRecord);
     }
 
     public void takePicture(View view)

@@ -3,17 +3,25 @@ package com.daniel.weighttracker.DBHelpers;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
+import android.os.Parcelable;
+import android.widget.Toast;
 
 import com.daniel.weighttracker.WeightRecord;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.Date;
+
+import static com.daniel.weighttracker.LogHelper.Log;
 
 /**
  * Created by Daniel on 5/22/2017.
@@ -29,8 +37,12 @@ public class WeightEntryService  {
     {
         if( context == null )
         {
-            context = c;
-            return true;
+            if( c != null)
+            {
+                context = c;
+                return true;
+            }
+
         }
 
         return false;
@@ -42,93 +54,86 @@ public class WeightEntryService  {
         return context;
     }
 
-    public static boolean saveNewFile(String filename)
-    {
-        File file = new File( context.getFilesDir()  , filename);
-
-        writeFileContents(file, "Hello There World");
-
-        return true;
-    }
-
-    //Returns the FilePath of the newly written image
-    public static String writeWeightRecord(WeightRecord record)
+    public static String saveImage(WeightRecord w)
     {
 
-        return "";
-    }
+        String fileName = null;
 
-    public static String writeWeightRecord(Bitmap image)
-    {
-
-        return "";
-    }
-
-    public static WeightRecord getWeightRecord()
-    {
-
-
-        return new WeightRecord();
-
-    }
-    public static Bitmap getImage(String filename)
-    {
-        return true;
-    }
-
-    public static boolean updateFile(String filename)
-    {
-       return true;
-    }
-
-    public static String readFile( File file )
-    {
-        String contents = "";
-        try ( FileInputStream inputStream = new FileInputStream( new File(file.toString()) ) )
+        if( w != null && w.getImage() != null && w.getDateAsString() != null )
         {
-            contents = getFileContents( inputStream );
+            fileName = saveImage(w.getImage(), w.getDateAsString());
+            w.setFileName(fileName);
         }
-        catch( IOException e )
-        {}
 
-        return contents;
 
+        return fileName;
     }
 
-    private static String getFileContents(InputStream input)
+    private static String saveImage(Bitmap image, String fileName )
     {
-        StringBuilder string = new StringBuilder();
-
-        try ( BufferedReader reader = new BufferedReader( new InputStreamReader( input )) )
+        fileName += ".png";
+        try( FileOutputStream fos = context.openFileOutput( fileName, Context.MODE_PRIVATE) )
         {
-            String line = null;
-            while ( (line = reader.readLine()) != null )
+            if( image.compress(Bitmap.CompressFormat.PNG, 100, fos) );
             {
-                string.append( line ).append("\n");
+                return fileName;
             }
         }
-        catch (IOException e)
+        catch(FileNotFoundException e )
         {
-
+            Log("FileNotFoundException saving Image: ", e);
+        }
+        catch(IOException e )
+        {
+            Log("IO Exception occurred saving Image: ", e);
         }
 
-        return string.toString();
 
+
+        return null;
     }
 
-    private static String writeFileContents(File file, String data)
+    public static Bitmap getImage(String imageName)
     {
-        try (FileOutputStream output = context.openFileOutput(file.getName(), Context.MODE_PRIVATE))
-        {
-            output.write(data.getBytes());
-        }
-        catch(IOException e)
-        {
+        Bitmap image = null;
 
+        try
+        {
+            File filepath = context.getFileStreamPath( imageName );
+            FileInputStream fis = new FileInputStream( filepath );
+
+            image = BitmapFactory.decodeStream(fis);
+        }
+        catch(FileNotFoundException e )
+        {
+            Log("FileNotFoundException getting Image: ", e);
+        }
+        catch(IOException e )
+        {
+            Log("IO Exception occurred getting Image: ", e);
         }
 
-        return "";
+        return image;
     }
+
+    public static void deleteImage(WeightRecord w)
+    {
+        delete(w.getFileName());
+    }
+
+    private static void delete(String doomedFile)
+    {
+        File file = context.getFileStreamPath( doomedFile );
+
+        if(file.exists() )
+        {
+            file.delete();
+            Toast.makeText(context, "Record Deleted", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
 
 
 

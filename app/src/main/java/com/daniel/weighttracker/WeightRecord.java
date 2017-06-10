@@ -47,6 +47,16 @@ public class WeightRecord  {
     public long getDate(){ return date.getTime(); }
     public void setDate(Date date ){ this.date = date;}
 
+    public String getDateAsString(){ return date.toString(); }
+
+    @Override
+    public String toString()
+    {
+        String date = getDateAsString();
+        date = date.substring(0, date.lastIndexOf(":"));
+        return getWeight() + " "  + date;
+    }
+
 
 
 

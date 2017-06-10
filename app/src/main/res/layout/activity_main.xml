@@ -14,14 +14,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add New"
-            android:onClick="onClick"/>
+            android:onClick="addNewWeightRecord"/>
 
-        <Button
-            android:id="@+id/delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Delete First"
-            android:onClick="onClick"/>
+
 
     </LinearLayout>
 
